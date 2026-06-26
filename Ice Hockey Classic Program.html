@@ -96,13 +96,58 @@ a{color:inherit;}
   font-size:14px; text-transform:uppercase;
   background:none; border:none; cursor:pointer;
   color:var(--ink-soft); padding:10px 14px; border-radius:999px;
-  white-space:nowrap;
+  white-space:nowrap; text-decoration:none; display:inline-block;
   transition:background .15s ease, color .15s ease;
 }
 .tab-btn:hover{color:var(--ink); background:var(--mist);}
 .tab-btn[aria-selected="true"]{
   color:#fff; background:var(--ink);
 }
+.tab-btn-external{
+  display:inline-flex; align-items:center; gap:6px;
+  border-left:1px solid var(--line); margin-left:4px; padding-left:14px;
+}
+.ic-ext{width:12px; height:12px; fill:currentColor; opacity:.6;}
+
+/* ---------------- Mobile menu button + dropdown ---------------- */
+.mobile-menu-btn{
+  display:none; align-items:center; justify-content:center;
+  width:42px; height:42px; flex-shrink:0;
+  background:none; border:1px solid var(--line); border-radius:10px;
+  cursor:pointer; padding:0; position:relative;
+}
+.mobile-menu-btn .ic-bar{
+  position:absolute; left:10px; right:10px; height:2px; background:var(--ink);
+  border-radius:2px; transition:transform .2s ease, opacity .2s ease, top .2s ease;
+}
+.mobile-menu-btn .ic-bar:nth-child(1){top:14px;}
+.mobile-menu-btn .ic-bar:nth-child(2){top:20px;}
+.mobile-menu-btn .ic-bar:nth-child(3){top:26px;}
+.mobile-menu-btn[aria-expanded="true"] .ic-bar:nth-child(1){top:20px; transform:rotate(45deg);}
+.mobile-menu-btn[aria-expanded="true"] .ic-bar:nth-child(2){opacity:0;}
+.mobile-menu-btn[aria-expanded="true"] .ic-bar:nth-child(3){top:20px; transform:rotate(-45deg);}
+
+.mobile-dropdown{
+  display:none;
+  flex-direction:column;
+  background:var(--paper);
+  border-top:1px solid var(--line);
+  box-shadow:0 14px 28px -16px rgba(10,20,40,.25);
+}
+.mobile-dropdown.is-open{display:flex;}
+.mobile-link{
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%; text-align:left; background:none; border:none;
+  border-bottom:1px solid var(--line);
+  font-family:var(--label); font-weight:600; letter-spacing:.05em;
+  font-size:15px; text-transform:uppercase; color:var(--ink);
+  padding:16px 24px; cursor:pointer; text-decoration:none;
+}
+.mobile-link:last-child{border-bottom:none;}
+.mobile-link[aria-current="true"]{color:var(--red);}
+.mobile-link[aria-current="true"]::after{content:"";width:7px; height:7px; border-radius:50%; background:var(--red);}
+.mobile-link-external{color:var(--ink-soft);}
+.mobile-link-external .ic-ext{width:13px; height:13px; opacity:.7;}
 
 /* ---------------- Panels ---------------- */
 .panel{display:none;}
@@ -360,11 +405,11 @@ h2.letter-title{
 
 /* ---------------- Quick reference list ---------------- */
 .cause-note{
-  display:flex; gap:12px; align-items:flex-start;
+  display:flex; gap:14px; align-items:flex-start;
   max-width:var(--maxw); margin:22px auto 0; padding:16px 20px;
   background:var(--red-tint); border:1px solid #f0c4c8; border-radius:var(--radius);
 }
-.ic-heart{width:20px; height:20px; fill:var(--red-deep); flex-shrink:0; margin-top:1px;}
+.cause-flag{font-size:26px; line-height:1.1; flex-shrink:0;}
 .cause-note p{margin:0; font-size:15px; color:var(--ink); line-height:1.55;}
 
 .quicklist-wrap{
@@ -446,10 +491,10 @@ h2.letter-title{
 
 /* ---------------- Responsive ---------------- */
 @media (max-width:640px){
-  .topbar-inner{height:auto; flex-wrap:wrap; padding-top:12px; padding-bottom:0; gap:10px;}
+  .tabs{display:none;}
+  .mobile-menu-btn{display:flex;}
   .wordmark-top{font-size:17px;}
   .wordmark-sub{font-size:10px;}
-  .tabs{width:100%; padding-bottom:10px; justify-content:flex-start;}
   .hero{margin:18px 14px 0; border-radius:12px;}
   .page-head{padding:40px 18px 4px;}
   .roster-section{padding:32px 18px 0;}
@@ -473,7 +518,18 @@ h2.letter-title{
       <button class="tab-btn" id="tab-canada" role="tab" data-tab="canada" aria-selected="false" aria-controls="panel-canada">Canada Roster</button>
       <button class="tab-btn" id="tab-usa" role="tab" data-tab="usa" aria-selected="false" aria-controls="panel-usa">USA Roster</button>
       <button class="tab-btn" id="tab-about" role="tab" data-tab="about" aria-selected="false" aria-controls="panel-about">About</button>
+      <a class="tab-btn tab-btn-external" href="https://gamedayapparelonline.myshopify.com/collections/ihc25" target="_blank" rel="noopener">Merchandise<svg viewBox="0 0 24 24" class="ic-ext" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3z"/><path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H5v12h12v-6h2z"/></svg></a>
     </nav>
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-expanded="false" aria-controls="mobile-dropdown" aria-label="Open menu">
+      <span class="ic-bar"></span><span class="ic-bar"></span><span class="ic-bar"></span>
+    </button>
+  </div>
+  <div class="mobile-dropdown" id="mobile-dropdown">
+    <button class="mobile-link" data-tab="cover" aria-current="true">Cover</button>
+    <button class="mobile-link" data-tab="canada" aria-current="false">Canada Roster</button>
+    <button class="mobile-link" data-tab="usa" aria-current="false">USA Roster</button>
+    <button class="mobile-link" data-tab="about" aria-current="false">About</button>
+    <a class="mobile-link mobile-link-external" href="https://gamedayapparelonline.myshopify.com/collections/ihc25" target="_blank" rel="noopener">Merchandise<svg viewBox="0 0 24 24" class="ic-ext" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3z"/><path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H5v12h12v-6h2z"/></svg></a>
   </div>
 </header>
 
@@ -492,7 +548,7 @@ h2.letter-title{
 
   <div class="letter">
     <span class="eyebrow">A welcome from the Classic</span>
-    <h2 class="letter-title">Welcome to Hobart.<br>Welcome to hockey.</h2>
+    <h2 class="letter-title">Welcome to Hobart.<br>Welcome to Hockey.</h2>
     <p>Hobart, welcome to ice hockey. Or perhaps we should say, ice hockey, welcome to Hobart.</p>
 <p>The Canada-USA Ice Hockey Classic is a celebration of what we believe is the greatest sport on earth. It&#x27;s about bringing together players who have spent their lives chasing frozen ponds, early morning training sessions, long bus rides and one more season in pursuit of a game they simply love.</p>
 <p>We&#x27;ve assembled two teams wearing the colours of Canada and the United States, the greatest rivalry in international hockey. These jerseys represent journeys just as much as they represent countries.</p>
@@ -510,7 +566,7 @@ h2.letter-title{
 <p>Across both rosters, there are 29 players with professional experience, including two former NHL players. The teams also feature four players with national team experience at some level, 13 who played pro in Europe, eight AIHL champions and four players who currently compete in the NZIHL.</p>
 <p>The speed, skill and physicality are what first capture your attention. The friendships, sacrifices and resilience are what keep people coming back. Hockey has always been about more than the scoreboard. It is a community built on passion, hard work and an unwavering love of the game.</p>
 <p>We hope you enjoy tonight&#x27;s showcase, cheer loudly, meet a few of the players afterwards and leave Hobart with a greater appreciation for the people who make this sport so special.</p>
-    <p class="letter-closing"><span>Welcome</span> <span>to hockey.</span></p>
+    <p class="letter-closing"><span>Welcome</span> <span>to Hockey.</span></p>
   </div>
 
   <div class="stats-strip"><div class="stat"><span class="stat-num">29</span><span class="stat-label">Players with pro experience</span></div><div class="stat"><span class="stat-num">2</span><span class="stat-label">Former NHL players</span></div><div class="stat"><span class="stat-num">4</span><span class="stat-label">National-team capped players</span></div><div class="stat"><span class="stat-num">13</span><span class="stat-label">Played pro in Europe</span></div><div class="stat"><span class="stat-num">8</span><span class="stat-label">AIHL champions</span></div><div class="stat"><span class="stat-num">4</span><span class="stat-label">Currently in the NZIHL</span></div></div>
@@ -523,7 +579,7 @@ h2.letter-title{
     <p class="page-sub">Canada's roster features players who have played in a combined 15 countries, including the NHL. Sorted by captain, then forwards, defence and goaltenders, each group ordered by sweater number.</p>
   </div>
 
-  <div class="cause-note"><svg viewBox="0 0 24 24" class="ic-heart" aria-hidden="true"><path d="M12 21s-7.5-4.6-10.2-9.3C.2 9 1 5.7 4 4.4c2.3-1 4.8-.2 6.2 1.7L12 8.2l1.8-2.1c1.4-1.9 3.9-2.7 6.2-1.7 3 1.3 3.8 4.6 2.2 7.3C19.5 16.4 12 21 12 21z"/></svg><p>Below is Team Canada&#x27;s roster. You can scroll down for player bios and information on each. Each of these players are donating their time to be here, to raise money for Stop Concussions and bring an experience to Australian fans.</p></div>
+  <div class="cause-note"><span class="cause-flag" aria-hidden="true">🇨🇦</span><p>Below is Team Canada&#x27;s roster. You can scroll down for player bios and information on each. Each of these players are donating their time to be here, to raise money for Stop Concussions and bring an experience to Australian fans.</p></div>
 
   <div class="quicklist-wrap">
     <p class="quicklist-head">Full roster at a glance, by number. Tap a name to jump to their bio.</p>
@@ -1238,10 +1294,10 @@ h2.letter-title{
   <div class="page-head">
     <div class="team-flagbar flagbar-usa"><span></span><span></span><span></span></div>
     <h2 class="page-title">USA Roster</h2>
-    <p class="page-sub">17 players, three countries of residence, and one jersey. Sorted by captain, then forwards, defence and goaltenders, each group ordered by sweater number.</p>
+    <p class="page-sub">USA's roster features players who have played in a combined 12 countries, including the NHL. Sorted by captain, then forwards, defence and goaltenders, each group ordered by sweater number.</p>
   </div>
 
-  <div class="cause-note"><svg viewBox="0 0 24 24" class="ic-heart" aria-hidden="true"><path d="M12 21s-7.5-4.6-10.2-9.3C.2 9 1 5.7 4 4.4c2.3-1 4.8-.2 6.2 1.7L12 8.2l1.8-2.1c1.4-1.9 3.9-2.7 6.2-1.7 3 1.3 3.8 4.6 2.2 7.3C19.5 16.4 12 21 12 21z"/></svg><p>Below is Team USA&#x27;s roster. You can scroll down for player bios and information on each. Each of these players are donating their time to be here, to raise money for Stop Concussions and bring an experience to Australian fans.</p></div>
+  <div class="cause-note"><span class="cause-flag" aria-hidden="true">🇺🇸</span><p>Below is Team USA&#x27;s roster. You can scroll down for player bios and information on each. Each of these players are donating their time to be here, to raise money for Stop Concussions and bring an experience to Australian fans.</p></div>
 
   <div class="quicklist-wrap">
     <p class="quicklist-head">Full roster at a glance, by number. Tap a name to jump to their bio.</p>
@@ -1631,7 +1687,7 @@ h2.letter-title{
       <span class="learnmore-text">Learn more about Jed Lake</span>
       <svg viewBox="0 0 24 24" class="ic-chev" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
     </summary>
-    <p class="bio">By far the youngest player in this program at 19, Lake is currently representing Australia internationally, having won a silver medal for the Australian U18 team in 2024-25, where he was named Best Forward, and a second silver with the U20 team this season. He plays junior hockey in the U.S. with the New Jersey Rockets while also seeing part time AIHL action with Melbourne Ice.</p>
+    <p class="bio">By far the youngest player in this program at 19, Lake is currently representing Australia internationally, having won a silver medal for the Australian U18 team in 2024-25, where he was named Best Forward, and a second silver with the U20 team this season. He plays junior hockey in the U.S. with the New Jersey Rockets while also seeing part time AIHL action with Melbourne Ice. He leads all Australian born players in 2026 as a teenager.</p>
   </details>
 </article>
   </div>
@@ -1919,17 +1975,14 @@ h2.letter-title{
   <div class="page-head">
     <div class="team-flagbar flagbar-can"><span></span><span></span><span></span></div>
     <h2 class="page-title">About the Classic</h2>
-    <p class="page-sub">The story behind the Ice Hockey Classic &mdash; coming soon.</p>
+    <p class="page-sub">The story behind the Ice Hockey Classic.</p>
   </div>
-  <div class="placeholder">
-    <div class="placeholder-card">
-      <div class="placeholder-icon"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/></svg></div>
-      <h3>More details on the way</h3>
-      <p>Background on the event, the venue, the organisers and our partners will be added here ahead of the series.</p>
-      <div class="stub-list">
-        <span>Our Story</span><span>The Venue</span><span>Partners</span><span>Media</span>
-      </div>
-    </div>
+  <div class="letter" style="margin-top:8px;">
+    <p>The Ice Hockey Classic was created by Kerry Goulet to showcase professional hockey in Australia, with touring teams made up of players from Canada and the United States. These players don&#x27;t play together during their regular seasons. They donate their time to take part in the tour, training young players across Australia along the way and supporting local programs such as Ice Factor in Adelaide.</p>
+<p>The tour exists to raise awareness and funds for player safety in hockey. Causes supported through the Classic include the StopConcussions Foundation, Brain Injury Australia and Ice Hockey Australia.</p>
+<p>One of the programs behind the tour is Safe4Sports, a prevention program that gives sport organisations, administrators, parents and players practical steps to make their sport safer. Serious sport injuries have many causes, so Safe4Sports works with every part of a team, starting with coaches, who it sees as the main advocates for safer play. A well prepared coach can shape how an entire team and its community think about player safety.</p>
+<p>StopConcussions was founded by professional hockey players Keith Primeau, Wayne Primeau and Kerry Goulet. It&#x27;s an education and prevention platform focused on concussions and neurotrauma across all sports.</p>
+<p>The Ice Hockey Classic is presented by TEG Live and TLA Worldwide, in association with the StopConcussions Foundation. TEG Live is a live entertainment and sport business covering content, hospitality, sponsorship and event management. TLA Worldwide&#x27;s talent management team represents athletes and personalities across a wide range of sports and broadcasting.</p>
   </div>
 </section>
 </main>
@@ -1943,13 +1996,31 @@ h2.letter-title{
 
 <script>
 (function(){
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-btn[role="tab"]'));
+  var mobileLinks = Array.prototype.slice.call(document.querySelectorAll('.mobile-link[data-tab]'));
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var menuBtn = document.getElementById('mobile-menu-btn');
+  var dropdown = document.getElementById('mobile-dropdown');
+
+  function closeMenu(){
+    if(!dropdown) return;
+    dropdown.classList.remove('is-open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  function openMenu(){
+    dropdown.classList.add('is-open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+  }
 
   function activate(id, pushHash){
     tabs.forEach(function(t){
       var on = t.getAttribute('data-tab') === id;
       t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    mobileLinks.forEach(function(l){
+      var on = l.getAttribute('data-tab') === id;
+      l.setAttribute('aria-current', on ? 'true' : 'false');
     });
     panels.forEach(function(p){
       p.classList.toggle('is-active', p.id === 'panel-' + id);
@@ -1970,6 +2041,29 @@ h2.letter-title{
       activate(tabs[next].getAttribute('data-tab'), true);
     });
   });
+
+  mobileLinks.forEach(function(l){
+    l.addEventListener('click', function(){
+      activate(l.getAttribute('data-tab'), true);
+      closeMenu();
+    });
+  });
+
+  if(menuBtn && dropdown){
+    menuBtn.addEventListener('click', function(){
+      var open = menuBtn.getAttribute('aria-expanded') === 'true';
+      if(open){ closeMenu(); } else { openMenu(); }
+    });
+    document.addEventListener('click', function(e){
+      if(!dropdown.classList.contains('is-open')) return;
+      if(dropdown.contains(e.target) || menuBtn.contains(e.target)) return;
+      closeMenu();
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){ closeMenu(); }
+    });
+    window.addEventListener('resize', closeMenu);
+  }
 
   var initial = (location.hash || '#cover').replace('#','');
   if(!tabs.some(function(t){return t.getAttribute('data-tab') === initial;})){
